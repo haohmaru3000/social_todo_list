@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"to_do_list/common"
 	"to_do_list/module/item/model"
 )
 
@@ -14,7 +15,7 @@ func (s *sqlStore) DeleteItem(ctx context.Context, cond map[string]interface{}) 
 		Updates(map[string]interface{}{
 			"status": deletedStatus,
 		}).Error; err != nil {
-		return err
+		return common.ErrDB(err)
 	}
 
 	return nil

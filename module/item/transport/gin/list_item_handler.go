@@ -29,9 +29,9 @@ func ListItem(db *gorm.DB) func(*gin.Context) {
 		queryString.Paging.Process()
 
 		store := storage.NewSQLStore(db)
-		business := biz.NewListItemBiz(store)
+		business := biz.NewListItemsBiz(store)
 
-		result, err := business.ListItem(c.Request.Context(), &queryString.Filter, &queryString.Paging)
+		result, err := business.ListItems(c.Request.Context(), &queryString.Filter, &queryString.Paging)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
