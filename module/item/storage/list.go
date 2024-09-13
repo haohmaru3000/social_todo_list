@@ -6,7 +6,7 @@ import (
 	"to_do_list/module/item/model"
 )
 
-func (s *sqlStore) ListItems(
+func (s *sqlStore) ListItem(
 	ctx context.Context,
 	filter *model.Filter,
 	paging *common.Paging,
@@ -15,6 +15,10 @@ func (s *sqlStore) ListItems(
 	var result []model.TodoItem
 
 	db := s.db.Where("status <> ?", "Deleted")
+
+	// Get items of requester only
+	//requester := ctx.Value(common.CurrentUser).(common.Requester)
+	//db = db.Where("user_id = ?", requester.GetUserId())
 
 	if f := filter; f != nil {
 		if v := f.Status; v != "" {

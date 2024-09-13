@@ -3,16 +3,18 @@ package ginitem
 import (
 	"net/http"
 	"strconv"
-	"to_do_list/common"
-	"to_do_list/module/item/biz"
-	"to_do_list/module/item/storage"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"to_do_list/common"
+	"to_do_list/module/item/biz"
+	"to_do_list/module/item/storage"
 )
 
 func GetItem(db *gorm.DB) func(*gin.Context) {
 	return func(c *gin.Context) {
+
 		id, err := strconv.Atoi(c.Param("id"))
 
 		if err != nil {

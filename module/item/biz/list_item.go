@@ -6,8 +6,8 @@ import (
 	"to_do_list/module/item/model"
 )
 
-type ListItemsStorage interface {
-	ListItems(
+type ListItemStorage interface {
+	ListItem(
 		ctx context.Context,
 		filter *model.Filter,
 		paging *common.Paging,
@@ -15,20 +15,23 @@ type ListItemsStorage interface {
 	) ([]model.TodoItem, error)
 }
 
-type listItemsBiz struct {
-	store ListItemsStorage
+type listItemBiz struct {
+	store     ListItemStorage
+	requester common.Requester
 }
 
-func NewListItemsBiz(store ListItemsStorage) *listItemsBiz {
-	return &listItemsBiz{store: store}
+func NewListItemBiz(store ListItemStorage, requester common.Requester) *listItemBiz {
+	return &listItemBiz{store: store, requester: requester}
 }
 
-func (biz *listItemsBiz) ListItems(
+func (biz *listItemBiz) ListItem(
 	ctx context.Context,
 	filter *model.Filter,
 	paging *common.Paging,
 ) ([]model.TodoItem, error) {
-	data, err := biz.store.ListItems(ctx, filter, paging)
+	ctxStore := context.WithValue(ctx, common.CurrentUser, biz.requester)
+
+	data, err := biz.store.ListItem(ctxStore, filter, paging)
 
 	if err != nil {
 		return nil, common.ErrCannotListEntity(model.EntityName, err)

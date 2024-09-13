@@ -2,13 +2,14 @@ package ginitem
 
 import (
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
 	"to_do_list/common"
 	"to_do_list/module/item/biz"
 	"to_do_list/module/item/model"
 	"to_do_list/module/item/storage"
-
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func ListItem(db *gorm.DB) func(*gin.Context) {
@@ -28,10 +29,12 @@ func ListItem(db *gorm.DB) func(*gin.Context) {
 
 		queryString.Paging.Process()
 
-		store := storage.NewSQLStore(db)
-		business := biz.NewListItemsBiz(store)
+		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
-		result, err := business.ListItems(c.Request.Context(), &queryString.Filter, &queryString.Paging)
+		store := storage.NewSQLStore(db)
+		business := biz.NewListItemBiz(store, requester)
+
+		result, err := business.ListItem(c.Request.Context(), &queryString.Filter, &queryString.Paging)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
