@@ -6,15 +6,16 @@ import (
 	"time"
 	"to_do_list/common"
 
+	goservice "github.com/200Lab-Education/go-sdk"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // NOTE: this handler is very simple and please do not use it in practice
 // Instead, I recommend you should check "Upload Image to AWS S3 and CDN with CloudFront"
 
-func Upload(db *gorm.DB) func(ctx *gin.Context) {
+func Upload(serviceCtx goservice.ServiceContext) func(ctx *gin.Context) {
 	return func(c *gin.Context) {
+
 		fileHeader, err := c.FormFile("file")
 
 		if err != nil {

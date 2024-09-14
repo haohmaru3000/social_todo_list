@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"to_do_list/common"
-	"to_do_list/component/tokenprovider"
 	"to_do_list/module/user/model"
+	"to_do_list/plugin/tokenprovider"
 )
 
 type LoginStorage interface {
