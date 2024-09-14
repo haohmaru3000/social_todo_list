@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"to_do_list/common"
 )
 
@@ -13,8 +14,8 @@ func Recover() gin.HandlerFunc {
 
 				if appErr, ok := err.(*common.AppError); ok {
 					c.AbortWithStatusJSON(appErr.StatusCode, appErr)
-					//panic(err)
-					return
+					panic(err)
+					// return
 				}
 
 				appErr := common.ErrInternal(err.(error))

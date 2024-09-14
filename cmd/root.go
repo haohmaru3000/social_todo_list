@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"os"
+
+	"gorm.io/gorm"
 
 	"to_do_list/common"
 	"to_do_list/middleware"
@@ -12,6 +14,8 @@ import (
 	"to_do_list/module/upload"
 	userstorage "to_do_list/module/user/storage"
 	ginuser "to_do_list/module/user/transport/gin"
+	ginuserlikeitem "to_do_list/module/userlikeitem/transport/gin"
+	"to_do_list/plugin/simple"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
@@ -26,6 +30,7 @@ func newService() goservice.Service {
 		goservice.WithVersion("1.0.0"),
 		goservice.WithInitRunnable(sdkgorm.NewGormDB("main.mysql", common.PluginDBMain)),
 		goservice.WithInitRunnable(jwt.NewJWTProvider(common.PluginJWT)),
+		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
 	)
 
 	return service
@@ -45,6 +50,13 @@ var rootCmd = &cobra.Command{
 
 		service.HTTPServer().AddHandler(func(engine *gin.Engine) {
 			engine.Use(middleware.Recover())
+
+			// Example for Simple Plugin
+			type CanGetValue interface {
+				GetValue() string
+			}
+			log.Println(service.MustGet("simple").(CanGetValue).GetValue())
+			/////////
 
 			db := service.MustGet(common.PluginDBMain).(*gorm.DB)
 
@@ -67,6 +79,10 @@ var rootCmd = &cobra.Command{
 					items.GET("/:id", ginitem.GetItem(service))
 					items.PATCH("/:id", ginitem.UpdateItem(service))
 					items.DELETE("/:id", ginitem.DeleteItem(service))
+
+					items.POST("/:id/like", ginuserlikeitem.LikeItem(service))
+					items.DELETE("/:id/unlike", ginuserlikeitem.UnlikeItem(service))
+					items.GET("/:id/liked-users", ginuserlikeitem.ListUserLiked(service))
 				}
 			}
 

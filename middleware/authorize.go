@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 
 	"to_do_list/common"
@@ -21,8 +20,8 @@ type AuthenStore interface {
 func ErrWrongAuthHeader(err error) *common.AppError {
 	return common.NewCustomError(
 		err,
-		fmt.Sprintf("wrong authen header"),
-		fmt.Sprintf("ErrWrongAuthHeader"),
+		"wrong authen header",
+		"ErrWrongAuthHeader",
 	)
 }
 
