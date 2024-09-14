@@ -7,7 +7,9 @@ import (
 	"to_do_list/common"
 	"to_do_list/module/item/biz"
 	"to_do_list/module/item/model"
+	"to_do_list/module/item/repository"
 	"to_do_list/module/item/storage"
+	usrLikeStore "to_do_list/module/userlikeitem/storage"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
@@ -35,7 +37,9 @@ func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
 		store := storage.NewSQLStore(db)
-		business := biz.NewListItemBiz(store, requester)
+		likeStore := usrLikeStore.NewSQLStore(db)
+		repo := repository.NewListItemRepo(store, likeStore, requester)
+		business := biz.NewListItemBiz(repo, requester)
 
 		result, err := business.ListItem(c.Request.Context(), &queryString.Filter, &queryString.Paging)
 

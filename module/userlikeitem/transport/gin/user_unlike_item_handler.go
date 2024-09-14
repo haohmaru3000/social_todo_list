@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"to_do_list/common"
+	itemStorage "to_do_list/module/item/storage"
 	"to_do_list/module/userlikeitem/biz"
 	"to_do_list/module/userlikeitem/storage"
 
@@ -25,7 +26,8 @@ func UnlikeItem(serviceCtx goservice.ServiceContext) gin.HandlerFunc {
 		db := serviceCtx.MustGet(common.PluginDBMain).(*gorm.DB)
 
 		store := storage.NewSQLStore(db)
-		business := biz.NewUserUnlikeItemBiz(store)
+		itemStore := itemStorage.NewSQLStore(db)
+		business := biz.NewUserUnlikeItemBiz(store, itemStore)
 
 		if err := business.UnlikeItem(c.Request.Context(), requester.GetUserId(), int(id.GetLocalID())); err != nil {
 			panic(err)

@@ -2,10 +2,11 @@ package storage
 
 import (
 	"context"
-	"to_do_list/common"
-	"to_do_list/module/item/model"
 
 	"gorm.io/gorm"
+
+	"to_do_list/common"
+	"to_do_list/module/item/model"
 )
 
 func (s *sqlStore) GetItem(ctx context.Context, cond map[string]interface{}) (*model.TodoItem, error) {
