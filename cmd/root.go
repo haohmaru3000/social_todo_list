@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
-
-	"gorm.io/gorm"
 
 	"to_do_list/common"
 	"to_do_list/middleware"
@@ -16,6 +15,8 @@ import (
 	ginuser "to_do_list/module/user/transport/gin"
 	ginuserlikeitem "to_do_list/module/userlikeitem/transport/gin"
 	"to_do_list/plugin/simple"
+	"to_do_list/pubsub"
+	"to_do_list/subscriber"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
@@ -30,6 +31,7 @@ func newService() goservice.Service {
 		goservice.WithVersion("1.0.0"),
 		goservice.WithInitRunnable(sdkgorm.NewGormDB("main.mysql", common.PluginDBMain)),
 		goservice.WithInitRunnable(jwt.NewJWTProvider(common.PluginJWT)),
+		goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
 		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
 	)
 
@@ -92,6 +94,8 @@ var rootCmd = &cobra.Command{
 				})
 			})
 		})
+
+		_ = subscriber.NewEngine(service).Start()
 
 		if err := service.Start(); err != nil {
 			serviceLogger.Fatalln(err)

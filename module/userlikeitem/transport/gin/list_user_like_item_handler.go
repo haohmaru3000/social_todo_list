@@ -1,6 +1,7 @@
 package ginuserlikeitem
 
 import (
+	"gorm.io/gorm"
 	"net/http"
 
 	"to_do_list/common"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
-	"gorm.io/gorm"
 )
 
 func ListUserLiked(serviceCtx goservice.ServiceContext) gin.HandlerFunc {
