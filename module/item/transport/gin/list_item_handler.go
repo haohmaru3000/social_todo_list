@@ -9,7 +9,7 @@ import (
 	"to_do_list/module/item/model"
 	"to_do_list/module/item/repository"
 	"to_do_list/module/item/storage"
-	usrLikeStore "to_do_list/module/userlikeitem/storage"
+	"to_do_list/module/item/storage/restapi"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
@@ -18,6 +18,9 @@ import (
 func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 	return func(c *gin.Context) {
 		db := serviceCtx.MustGet(common.PluginDBMain).(*gorm.DB)
+		apiItemCaller := serviceCtx.MustGet(common.PluginItemAPI).(interface {
+			GetServiceURL() string
+		})
 
 		var queryString struct {
 			common.Paging
@@ -37,7 +40,7 @@ func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
 		store := storage.NewSQLStore(db)
-		likeStore := usrLikeStore.NewSQLStore(db)
+		likeStore := restapi.New(apiItemCaller.GetServiceURL(), serviceCtx.Logger("restapi.itemlikes"))
 		repo := repository.NewListItemRepo(store, likeStore, requester)
 		business := biz.NewListItemBiz(repo, requester)
 

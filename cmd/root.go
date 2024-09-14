@@ -14,6 +14,7 @@ import (
 	userstorage "to_do_list/module/user/storage"
 	ginuser "to_do_list/module/user/transport/gin"
 	ginuserlikeitem "to_do_list/module/userlikeitem/transport/gin"
+	"to_do_list/plugin/rpccaller"
 	"to_do_list/plugin/simple"
 	"to_do_list/pubsub"
 	"to_do_list/subscriber"
@@ -32,6 +33,7 @@ func newService() goservice.Service {
 		goservice.WithInitRunnable(sdkgorm.NewGormDB("main.mysql", common.PluginDBMain)),
 		goservice.WithInitRunnable(jwt.NewJWTProvider(common.PluginJWT)),
 		goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
+		goservice.WithInitRunnable(rpccaller.NewApiItemCaller(common.PluginItemAPI)),
 		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
 	)
 
@@ -86,6 +88,11 @@ var rootCmd = &cobra.Command{
 					items.DELETE("/:id/unlike", ginuserlikeitem.UnlikeItem(service))
 					items.GET("/:id/liked-users", ginuserlikeitem.ListUserLiked(service))
 				}
+			}
+
+			rpc := v1.Group("rpc")
+			{
+				rpc.POST("/get_item_likes", ginuserlikeitem.GetItemLikes(service))
 			}
 
 			engine.GET("/ping", func(c *gin.Context) {
