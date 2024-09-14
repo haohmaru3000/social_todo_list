@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+
 	"to_do_list/common"
 	"to_do_list/module/item/model"
 )
@@ -31,7 +32,7 @@ func (biz *listItemBiz) ListItem(
 ) ([]model.TodoItem, error) {
 	ctxStore := context.WithValue(ctx, common.CurrentUser, biz.requester)
 
-	data, err := biz.store.ListItem(ctxStore, filter, paging)
+	data, err := biz.store.ListItem(ctxStore, filter, paging, "Owner")
 
 	if err != nil {
 		return nil, common.ErrCannotListEntity(model.EntityName, err)

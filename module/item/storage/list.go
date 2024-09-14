@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+
 	"to_do_list/common"
 	"to_do_list/module/item/model"
 )
@@ -28,6 +29,10 @@ func (s *sqlStore) ListItem(
 
 	if err := db.Select("id").Table(model.TodoItem{}.TableName()).Count(&paging.Total).Error; err != nil {
 		return nil, err
+	}
+
+	for i := range moreKeys {
+		db = db.Preload(moreKeys[i])
 	}
 
 	if err := db.Select("*").Order("id desc").
