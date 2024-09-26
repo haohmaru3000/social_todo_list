@@ -3,9 +3,10 @@ package biz
 import (
 	"context"
 
-	"to_do_list/common"
 	"to_do_list/module/user/model"
-	"to_do_list/plugin/tokenprovider"
+
+	"github.com/haohmaru3000/go_sdk/common"
+	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider"
 )
 
 type LoginStorage interface {

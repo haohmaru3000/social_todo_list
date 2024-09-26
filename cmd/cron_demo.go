@@ -1,14 +1,14 @@
 package cmd
 
 import (
+	"gorm.io/gorm"
 	"log"
 
-	goservice "github.com/200Lab-Education/go-sdk"
-	"github.com/spf13/cobra"
-	"gorm.io/gorm"
-
 	"to_do_list/common"
-	"to_do_list/plugin/sdkgorm"
+
+	goservice "github.com/haohmaru3000/go_sdk"
+	"github.com/haohmaru3000/go_sdk/plugin/storage/sdkgorm"
+	"github.com/spf13/cobra"
 )
 
 var cronDemoCmd = &cobra.Command{

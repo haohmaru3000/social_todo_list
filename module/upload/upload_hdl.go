@@ -6,8 +6,8 @@ import (
 	"time"
 	"to_do_list/common"
 
-	goservice "github.com/200Lab-Education/go-sdk"
 	"github.com/gin-gonic/gin"
+	goservice "github.com/haohmaru3000/go_sdk"
 )
 
 // NOTE: this handler is very simple and please do not use it in practice

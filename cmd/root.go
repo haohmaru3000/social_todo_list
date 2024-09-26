@@ -6,18 +6,18 @@ import (
 	"net/http"
 	"os"
 
-	goservice "github.com/200Lab-Education/go-sdk"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/cobra"
-
 	"to_do_list/common"
 	"to_do_list/middleware"
 	ginitem "to_do_list/module/item/transport/gin"
 	"to_do_list/module/upload"
 	userstorage "to_do_list/module/user/storage"
 	ginuser "to_do_list/module/user/transport/gin"
-	"to_do_list/plugin/sdkgorm"
-	"to_do_list/plugin/tokenprovider/jwt"
+
+	"github.com/gin-gonic/gin"
+	goservice "github.com/haohmaru3000/go_sdk"
+	"github.com/haohmaru3000/go_sdk/plugin/storage/sdkgorm"
+	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider/jwt"
+	"github.com/spf13/cobra"
 )
 
 func newService() goservice.Service {

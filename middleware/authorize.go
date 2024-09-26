@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	goservice "github.com/200Lab-Education/go-sdk"
-	"github.com/gin-gonic/gin"
-
 	"to_do_list/common"
 	"to_do_list/module/user/model"
-	"to_do_list/plugin/tokenprovider"
+
+	"github.com/gin-gonic/gin"
+	goservice "github.com/haohmaru3000/go_sdk"
+	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider"
 )
 
 type AuthenStore interface {

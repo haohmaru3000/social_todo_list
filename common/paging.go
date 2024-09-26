@@ -7,12 +7,12 @@ type Paging struct {
 }
 
 func (p *Paging) Process() {
-	if p.Page < 1 {
+	if p.Page <= 0 {
 		p.Page = 1
 	}
 
-	if p.Limit <= 1 {
-		p.Limit = 1
+	if p.Limit <= 0 {
+		p.Limit = 50
 	}
 
 	if p.Limit >= 100 {
