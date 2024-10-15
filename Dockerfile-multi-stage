@@ -1,0 +1,23 @@
+FROM golang:1.23.2-alpine AS builder
+RUN mkdir /app
+
+RUN apk add --no-cache openssh-client git
+
+ARG GITHUB_USERNAME=haohmaru3000
+ARG GITHUB_TOKEN=
+ARG GITHUB_REPO_PATH=haohmaru3000/go_sdk
+
+RUN git config --global \
+    url."https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_REPO_PATH}".insteadOf \
+    "https://github.com/${GITHUB_REPO_PATH}"
+
+# FROM social-todo-service-cached as builder
+
+ADD . /app/
+WORKDIR /app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o demoApp .
+
+FROM alpine
+WORKDIR /app/
+COPY --from=builder /app/demoApp .
+ENTRYPOINT ["/app/demoApp"]
