@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 	"to_do_list/common"
 	"to_do_list/module/item/model"
 )
@@ -24,10 +26,16 @@ type listItemRepo struct {
 	store     ListItemStorage
 	likeStore ItemLikeStorage
 	requester common.Requester
+	tracer    trace.Tracer
 }
 
 func NewListItemRepo(store ListItemStorage, likeStore ItemLikeStorage, requester common.Requester) *listItemRepo {
-	return &listItemRepo{store: store, likeStore: likeStore, requester: requester}
+	return &listItemRepo{
+		store:     store,
+		likeStore: likeStore,
+		requester: requester,
+		tracer:    otel.Tracer("Item.Repo"),
+	}
 }
 
 func (repo *listItemRepo) ListItem(
@@ -37,8 +45,10 @@ func (repo *listItemRepo) ListItem(
 	moreKeys ...string,
 ) ([]model.TodoItem, error) {
 	ctxStore := context.WithValue(ctx, common.CurrentUser, repo.requester)
+	ctx, span := repo.tracer.Start(ctxStore, "item.repo.list")
+	defer span.End()
 
-	data, err := repo.store.ListItem(ctxStore, filter, paging, moreKeys...)
+	data, err := repo.store.ListItem(ctx, filter, paging, moreKeys...)
 
 	if err != nil {
 		return nil, common.ErrCannotListEntity(model.EntityName, err)
@@ -54,7 +64,7 @@ func (repo *listItemRepo) ListItem(
 		ids[i] = data[i].Id
 	}
 
-	likeUserMap, err := repo.likeStore.GetItemLikes(ctxStore, ids)
+	likeUserMap, err := repo.likeStore.GetItemLikes(ctx, ids)
 
 	if err != nil {
 		return data, nil

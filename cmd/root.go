@@ -20,6 +20,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
+	"github.com/haohmaru3000/go_sdk/plugin/jaeger"
 	"github.com/haohmaru3000/go_sdk/plugin/rpccaller"
 	"github.com/haohmaru3000/go_sdk/plugin/storage/sdkgorm"
 	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider/jwt"
@@ -35,6 +36,7 @@ func newService() goservice.Service {
 		goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
 		goservice.WithInitRunnable(rpccaller.NewApiItemCaller(common.PluginItemAPI)),
 		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
+		goservice.WithInitRunnable(jaeger.NewJaeger(common.PluginTracingService)),
 	)
 
 	return service
@@ -101,6 +103,17 @@ var rootCmd = &cobra.Command{
 				})
 			})
 		})
+
+		/***** Start TRACING *****/
+		type TracingService interface {
+			Run() error
+		}
+
+		je := service.MustGet("jaeger").(TracingService)
+		if err := je.Run(); err != nil {
+			log.Fatalln(err)
+		}
+		/***** End TRACING *****/
 
 		_ = subscriber.NewEngine(service).Start()
 

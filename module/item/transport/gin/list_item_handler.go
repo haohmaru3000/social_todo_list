@@ -1,8 +1,12 @@
 package ginitem
 
 import (
-	"gorm.io/gorm"
+	"fmt"
 	"net/http"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+	"gorm.io/gorm"
 
 	"to_do_list/common"
 	"to_do_list/module/item/biz"
@@ -17,6 +21,15 @@ import (
 
 func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 	return func(c *gin.Context) {
+		propagator := otel.GetTextMapPropagator()
+		extractCtx := propagator.Extract(c, propagation.HeaderCarrier(c.Request.Header))
+
+		_, span := otel.Tracer("Item.Transport").Start(extractCtx, "item.transport.list")
+		defer span.End()
+
+		traceParent := c.Request.Header.Get("traceparent")
+		fmt.Println("traceParent: " + traceParent)
+
 		db := serviceCtx.MustGet(common.PluginDBMain).(*gorm.DB)
 		apiItemCaller := serviceCtx.MustGet(common.PluginItemAPI).(interface {
 			GetServiceURL() string

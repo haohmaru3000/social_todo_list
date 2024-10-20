@@ -1,11 +1,19 @@
 package storage
 
-import "gorm.io/gorm"
+import (
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
+	"gorm.io/gorm"
+)
 
 type sqlStore struct {
-	db *gorm.DB
+	db     *gorm.DB
+	tracer trace.Tracer
 }
 
 func NewSQLStore(db *gorm.DB) *sqlStore {
-	return &sqlStore{db: db}
+	return &sqlStore{
+		db:     db,
+		tracer: otel.Tracer("Item.Storage"),
+	}
 }

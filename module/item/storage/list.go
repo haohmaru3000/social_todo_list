@@ -13,6 +13,9 @@ func (s *sqlStore) ListItem(
 	paging *common.Paging,
 	moreKeys ...string,
 ) ([]model.TodoItem, error) {
+	_, span := s.tracer.Start(ctx, "item.storage.list")
+	defer span.End()
+
 	var result []model.TodoItem
 
 	db := s.db.Where("status <> ?", "Deleted")

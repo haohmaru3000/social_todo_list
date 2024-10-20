@@ -14,10 +14,11 @@ const (
 )
 
 const (
-	PluginDBMain  = "mysql"
-	PluginJWT     = "jwt"
-	PluginPubSub  = "pubsub"
-	PluginItemAPI = "item-api"
+	PluginDBMain         = "mysql"
+	PluginJWT            = "jwt"
+	PluginPubSub         = "pubsub"
+	PluginItemAPI        = "item-api"
+	PluginTracingService = "Todo-List-Service"
 
 	TopicUserLikedItem   = "TopicUserLikedItem"
 	TopicUserUnlikedItem = "TopicUserUnlikedItem"
