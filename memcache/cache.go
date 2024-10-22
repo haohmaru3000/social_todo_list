@@ -1,12 +1,15 @@
 package memcache
 
 import (
+	"context"
 	"sync"
+	"time"
 )
 
 type Cache interface {
-	Write(k string, value interface{})
-	Read(k string) interface{}
+	Set(ctx context.Context, key string, value interface{}, ttl time.Duration) error
+	Get(ctx context.Context, key string, value interface{}) error
+	Delete(ctx context.Context, key string) error
 }
 
 type caching struct {
@@ -21,14 +24,18 @@ func NewCaching() *caching {
 	}
 }
 
-func (c *caching) Write(key string, value interface{}) {
+func (c *caching) Set(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
 	c.locker.Lock()
 	defer c.locker.Unlock()
 	c.store[key] = value
+
+	return nil
 }
 
-func (c *caching) Read(key string) interface{} {
+func (c *caching) Get(ctx context.Context, key string, value interface{}) error {
 	c.locker.RLock()
 	defer c.locker.RUnlock()
-	return c.store[key]
+	value = c.store[key]
+
+	return nil
 }

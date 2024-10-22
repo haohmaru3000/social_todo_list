@@ -19,6 +19,7 @@ const (
 	PluginPubSub         = "pubsub"
 	PluginItemAPI        = "item-api"
 	PluginTracingService = "Todo-List-Service"
+	PluginRedis          = "redis"
 
 	TopicUserLikedItem   = "TopicUserLikedItem"
 	TopicUserUnlikedItem = "TopicUserUnlikedItem"

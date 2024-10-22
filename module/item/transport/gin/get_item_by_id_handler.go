@@ -3,7 +3,6 @@ package ginitem
 import (
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 
 	"to_do_list/common"
 	"to_do_list/module/item/biz"
@@ -17,7 +16,7 @@ func GetItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 	return func(c *gin.Context) {
 		db := serviceCtx.MustGet(common.PluginDBMain).(*gorm.DB)
 
-		id, err := strconv.Atoi(c.Param("id"))
+		uid, err := common.FromBase58(c.Param("id"))
 
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
@@ -26,7 +25,7 @@ func GetItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 		store := storage.NewSQLStore(db)
 		business := biz.NewGetItemBiz(store)
 
-		data, err := business.GetItemById(c.Request.Context(), id)
+		data, err := business.GetItemById(c.Request.Context(), int(uid.GetLocalID()))
 
 		if err != nil {
 			panic(err)

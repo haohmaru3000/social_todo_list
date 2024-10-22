@@ -24,6 +24,7 @@ import (
 	"github.com/haohmaru3000/go_sdk/plugin/jaeger"
 	"github.com/haohmaru3000/go_sdk/plugin/rpccaller"
 	"github.com/haohmaru3000/go_sdk/plugin/storage/sdkgorm"
+	"github.com/haohmaru3000/go_sdk/plugin/storage/sdkredis"
 	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider/jwt"
 	"github.com/spf13/cobra"
 )
@@ -36,8 +37,9 @@ func newService() goservice.Service {
 		goservice.WithInitRunnable(jwt.NewJWTProvider(common.PluginJWT)),
 		goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
 		goservice.WithInitRunnable(rpccaller.NewApiItemCaller(common.PluginItemAPI)),
-		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
 		goservice.WithInitRunnable(jaeger.NewJaeger(common.PluginTracingService)),
+		goservice.WithInitRunnable(sdkredis.NewRedisDB("redis", common.PluginRedis)),
+		goservice.WithInitRunnable(simple.NewSimplePlugin("simple")),
 	)
 
 	return service
@@ -68,7 +70,7 @@ var rootCmd = &cobra.Command{
 			db := service.MustGet(common.PluginDBMain).(*gorm.DB)
 
 			authStore := userstorage.NewSQLStore(db)
-			authCache := memcache.NewUserCaching(memcache.NewCaching(), authStore)
+			authCache := memcache.NewUserCaching(memcache.NewRedisCache(service), authStore)
 
 			middlewareAuth := middleware.RequiredAuth(authCache, service)
 

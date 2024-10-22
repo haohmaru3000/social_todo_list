@@ -1,10 +1,11 @@
-/**** Implementation of cache.go to cache FindUser() ****/
 package memcache
 
 import (
 	"context"
 	"fmt"
+	"log"
 	"sync"
+	"time"
 
 	"to_do_list/module/user/model"
 )
@@ -28,27 +29,43 @@ func NewUserCaching(store Cache, realStore RealStore) *userCaching {
 }
 
 func (uc *userCaching) FindUser(ctx context.Context, conditions map[string]interface{}, moreInfo ...string) (*model.User, error) {
+	var user model.User
+
 	userId := conditions["id"].(int)
 	key := fmt.Sprintf("user-%d", userId)
 
-	userInCache := uc.store.Read(key)
+	err := uc.store.Get(ctx, key, &user)
 
-	if userInCache != nil {
-		return userInCache.(*model.User), nil
+	if err == nil && user.Id > 0 {
+		return &user, nil
 	}
 
-	// log.Println("Query user in real store with wrk")
+	var userErr error
 
-	// uc.once: to avoid Data-Racing
 	uc.once.Do(func() {
-		user, err := uc.realStore.FindUser(ctx, conditions, moreInfo...)
+		realUser, err := uc.realStore.FindUser(ctx, conditions, moreInfo...)
+		userErr = err
 
-		if err != nil {
-			panic(err)
+		if userErr != nil {
+			log.Println(userErr)
+			return
 		}
+
 		// Update cache
-		uc.store.Write(key, user)
+		user = *realUser
+		_ = uc.store.Set(ctx, key, realUser, time.Hour*2)
+
 	})
 
-	return uc.store.Read(key).(*model.User), nil
+	if userErr != nil {
+		return nil, userErr
+	}
+
+	err = uc.store.Get(ctx, key, &user)
+
+	if err == nil && user.Id > 0 {
+		return &user, nil
+	}
+
+	return nil, err
 }
