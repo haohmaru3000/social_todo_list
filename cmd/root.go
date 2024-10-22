@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"to_do_list/common"
+	"to_do_list/memcache"
 	"to_do_list/middleware"
 	ginitem "to_do_list/module/item/transport/gin"
 	"to_do_list/module/upload"
@@ -67,8 +68,9 @@ var rootCmd = &cobra.Command{
 			db := service.MustGet(common.PluginDBMain).(*gorm.DB)
 
 			authStore := userstorage.NewSQLStore(db)
+			authCache := memcache.NewUserCaching(memcache.NewCaching(), authStore)
 
-			middlewareAuth := middleware.RequiredAuth(authStore, service)
+			middlewareAuth := middleware.RequiredAuth(authCache, service)
 
 			v1 := engine.Group("/v1")
 			{
