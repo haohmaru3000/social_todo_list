@@ -5,7 +5,7 @@ import (
 	"log"
 	"sync"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 )
 
 type group struct {

@@ -3,8 +3,8 @@ package storage
 import (
 	"context"
 
-	"to_do_list/common"
-	"to_do_list/module/userlikeitem/model"
+	"social_todo_list/common"
+	"social_todo_list/module/userlikeitem/model"
 )
 
 func (s *sqlStore) Delete(ctx context.Context, userId, itemId int) error {

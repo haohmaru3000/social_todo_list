@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"to_do_list/module/user/model"
+	"social_todo_list/module/user/model"
 )
 
 type RealStore interface {

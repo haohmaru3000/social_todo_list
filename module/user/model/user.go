@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 )
 
 const EntityName = "User"

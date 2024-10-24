@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strings"
 
-	"to_do_list/common"
-	"to_do_list/module/user/model"
+	"social_todo_list/common"
+	"social_todo_list/module/user/model"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"

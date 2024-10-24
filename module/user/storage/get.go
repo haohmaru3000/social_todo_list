@@ -4,8 +4,8 @@ import (
 	"context"
 	"gorm.io/gorm"
 
-	"to_do_list/common"
-	"to_do_list/module/user/model"
+	"social_todo_list/common"
+	"social_todo_list/module/user/model"
 )
 
 func (s *sqlStore) FindUser(ctx context.Context, conditions map[string]interface{}, moreInfo ...string) (*model.User, error) {

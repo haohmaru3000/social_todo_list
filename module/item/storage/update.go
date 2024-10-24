@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"to_do_list/common"
-	"to_do_list/module/item/model"
+	"social_todo_list/common"
+	"social_todo_list/module/item/model"
 )
 
 func (s *sqlStore) UpdateItem(ctx context.Context, cond map[string]interface{}, dataUpdate *model.TodoItemUpdate) error {

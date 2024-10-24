@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 
 	"github.com/btcsuite/btcutil/base58"
 
-	"to_do_list/common"
-	"to_do_list/module/userlikeitem/model"
+	"social_todo_list/common"
+	"social_todo_list/module/userlikeitem/model"
 )
 
 const timeLayout = "2006-01-02T15:04:05.999999"

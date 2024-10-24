@@ -3,8 +3,8 @@ package storage
 import (
 	"context"
 
-	"to_do_list/common"
-	"to_do_list/module/user/model"
+	"social_todo_list/common"
+	"social_todo_list/module/user/model"
 )
 
 func (s *sqlStore) CreateUser(ctx context.Context, data *model.UserCreate) error {

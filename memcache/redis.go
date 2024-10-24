@@ -2,8 +2,8 @@ package memcache
 
 import (
 	"context"
+	"social_todo_list/common"
 	"time"
-	"to_do_list/common"
 
 	"github.com/go-redis/cache/v9"
 	goservice "github.com/haohmaru3000/go_sdk"

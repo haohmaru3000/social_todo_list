@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"to_do_list/module/user/model"
+	"social_todo_list/module/user/model"
 
 	"github.com/haohmaru3000/go_sdk/common"
 	"github.com/haohmaru3000/go_sdk/plugin/tokenprovider"

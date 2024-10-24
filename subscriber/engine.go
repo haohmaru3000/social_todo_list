@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	"to_do_list/common"
-	"to_do_list/common/asyncjob"
-	"to_do_list/pubsub"
+	"social_todo_list/common"
+	"social_todo_list/common/asyncjob"
+	"social_todo_list/pubsub"
 
 	goservice "github.com/haohmaru3000/go_sdk"
 )

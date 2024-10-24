@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	"to_do_list/common"
-	"to_do_list/module/userlikeitem/model"
-	"to_do_list/pubsub"
+	"social_todo_list/common"
+	"social_todo_list/module/userlikeitem/model"
+	"social_todo_list/pubsub"
 )
 
 type UserLikeItemStore interface {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"to_do_list/pubsub"
+	"social_todo_list/pubsub"
 
 	goservice "github.com/haohmaru3000/go_sdk"
 )

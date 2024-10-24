@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"

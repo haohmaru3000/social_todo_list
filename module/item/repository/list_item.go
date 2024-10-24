@@ -5,8 +5,8 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
-	"to_do_list/common"
-	"to_do_list/module/item/model"
+	"social_todo_list/common"
+	"social_todo_list/module/item/model"
 )
 
 type ListItemStorage interface {

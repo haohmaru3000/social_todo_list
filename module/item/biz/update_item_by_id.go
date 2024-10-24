@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"to_do_list/common"
-	"to_do_list/module/item/model"
+	"social_todo_list/common"
+	"social_todo_list/module/item/model"
 )
 
 type UpdateItemStore interface {

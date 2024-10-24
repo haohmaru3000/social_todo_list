@@ -4,9 +4,9 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 
-	"to_do_list/common"
-	"to_do_list/module/item/biz"
-	"to_do_list/module/item/storage"
+	"social_todo_list/common"
+	"social_todo_list/module/item/biz"
+	"social_todo_list/module/item/storage"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"

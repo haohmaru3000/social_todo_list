@@ -3,8 +3,8 @@ package biz
 import (
 	"context"
 
-	"to_do_list/common"
-	"to_do_list/module/userlikeitem/model"
+	"social_todo_list/common"
+	"social_todo_list/module/userlikeitem/model"
 )
 
 type ListUserLikeItemStore interface {

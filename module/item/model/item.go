@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 )
 
 var (

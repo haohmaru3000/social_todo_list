@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"to_do_list/common/asyncjob"
+	"social_todo_list/common/asyncjob"
 )
 
 func main() {

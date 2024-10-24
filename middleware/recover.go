@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
-	"to_do_list/common"
+	"social_todo_list/common"
 )
 
 func Recover() gin.HandlerFunc {
