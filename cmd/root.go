@@ -23,7 +23,8 @@ import (
 	ginuserlikeitem "social_todo_list/module/userlikeitem/transport/gin"
 	"social_todo_list/module/userlikeitem/transport/rpc"
 	"social_todo_list/plugin/simple"
-	"social_todo_list/pubsub"
+	// "social_todo_list/pubsub"
+	"social_todo_list/plugin/nats"
 	"social_todo_list/subscriber"
 
 	goservice "github.com/haohmaru3000/go_sdk"
@@ -41,7 +42,8 @@ func newService() goservice.Service {
 		goservice.WithVersion("1.0.0"),
 		goservice.WithInitRunnable(sdkgorm.NewGormDB("main.mysql", common.PluginDBMain)),
 		goservice.WithInitRunnable(jwt.NewJWTProvider(common.PluginJWT)),
-		goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
+		// goservice.WithInitRunnable(pubsub.NewPubSub(common.PluginPubSub)),
+		goservice.WithInitRunnable(nats.NewNATS(common.PluginPubSub)),
 		goservice.WithInitRunnable(rpccaller.NewApiItemCaller(common.PluginItemAPI)),
 		goservice.WithInitRunnable(jaeger.NewJaeger(common.PluginTracingService)),
 		goservice.WithInitRunnable(sdkredis.NewRedisDB("redis", common.PluginRedis)),
@@ -70,7 +72,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Error %v", err)
 		}
-		fmt.Printf("Server is listening on %v ...", address)
+		fmt.Printf("Server is listening on %v ...\n", address)
 		s := grpc.NewServer()
 		db := service.MustGet(common.PluginDBMain).(*gorm.DB)
 		store := storage.NewSQLStore(db)
