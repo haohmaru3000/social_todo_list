@@ -2,24 +2,24 @@ package ginitem
 
 import (
 	"fmt"
-	"net/http"
-
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	"gorm.io/gorm"
+	"net/http"
 
 	"social_todo_list/common"
+	"social_todo_list/demogrpc/demo"
 	"social_todo_list/module/item/biz"
 	"social_todo_list/module/item/model"
 	"social_todo_list/module/item/repository"
 	"social_todo_list/module/item/storage"
-	"social_todo_list/module/item/storage/restapi"
+	"social_todo_list/module/item/storage/rpc"
 
 	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
 )
 
-func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
+func ListItem(serviceCtx goservice.ServiceContext, client demo.ItemLikeServiceClient) func(*gin.Context) {
 	return func(c *gin.Context) {
 		propagator := otel.GetTextMapPropagator()
 		extractCtx := propagator.Extract(c, propagation.HeaderCarrier(c.Request.Header))
@@ -31,9 +31,9 @@ func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 		fmt.Println("traceParent: " + traceParent)
 
 		db := serviceCtx.MustGet(common.PluginDBMain).(*gorm.DB)
-		apiItemCaller := serviceCtx.MustGet(common.PluginItemAPI).(interface {
-			GetServiceURL() string
-		})
+		//apiItemCaller := serviceCtx.MustGet(common.PluginItemAPI).(interface {
+		//	GetServiceURL() string
+		//})
 
 		var queryString struct {
 			common.Paging
@@ -53,7 +53,9 @@ func ListItem(serviceCtx goservice.ServiceContext) func(*gin.Context) {
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
 		store := storage.NewSQLStore(db)
-		likeStore := restapi.New(apiItemCaller.GetServiceURL(), serviceCtx.Logger("restapi.itemlikes"))
+		//likeStore := restapi.New(apiItemCaller.GetServiceURL(), serviceCtx.Logger("restapi.itemlikes"))
+
+		likeStore := rpc.NewClient(client)
 		repo := repository.NewListItemRepo(store, likeStore, requester)
 		business := biz.NewListItemBiz(repo, requester)
 

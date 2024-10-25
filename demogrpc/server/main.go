@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 
-	"google.golang.org/grpc"
 	"social_todo_list/demogrpc/demo"
 )
 
@@ -28,7 +28,7 @@ func main() {
 
 	s := grpc.NewServer()
 
-	demo.RegisterItemLikesServiceServer(s, &server{})
+	demo.RegisterItemLikeServiceServer(s, &server{})
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalln(err)

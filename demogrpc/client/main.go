@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"log"
+
 	"social_todo_list/demogrpc/demo"
 )
 
@@ -19,11 +19,10 @@ func main() {
 
 	defer cc.Close()
 
-	client := demo.NewItemLikesServiceClient(cc)
+	client := demo.NewItemLikeServiceClient(cc)
 
 	for i := 1; i <= 3; i++ {
 		resp, _ := client.GetItemLikes(context.Background(), &demo.GetItemLikesReq{Ids: []int32{1, 2, 3}})
 		log.Println(resp.Result)
 	}
-
 }

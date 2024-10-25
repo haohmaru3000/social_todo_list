@@ -19,99 +19,99 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ItemLikesService_GetItemLikes_FullMethodName = "/demo.ItemLikesService/GetItemLikes"
+	ItemLikeService_GetItemLikes_FullMethodName = "/demo.ItemLikeService/GetItemLikes"
 )
 
-// ItemLikesServiceClient is the client API for ItemLikesService service.
+// ItemLikeServiceClient is the client API for ItemLikeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ItemLikesServiceClient interface {
+type ItemLikeServiceClient interface {
 	GetItemLikes(ctx context.Context, in *GetItemLikesReq, opts ...grpc.CallOption) (*ItemLikesResp, error)
 }
 
-type itemLikesServiceClient struct {
+type itemLikeServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewItemLikesServiceClient(cc grpc.ClientConnInterface) ItemLikesServiceClient {
-	return &itemLikesServiceClient{cc}
+func NewItemLikeServiceClient(cc grpc.ClientConnInterface) ItemLikeServiceClient {
+	return &itemLikeServiceClient{cc}
 }
 
-func (c *itemLikesServiceClient) GetItemLikes(ctx context.Context, in *GetItemLikesReq, opts ...grpc.CallOption) (*ItemLikesResp, error) {
+func (c *itemLikeServiceClient) GetItemLikes(ctx context.Context, in *GetItemLikesReq, opts ...grpc.CallOption) (*ItemLikesResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ItemLikesResp)
-	err := c.cc.Invoke(ctx, ItemLikesService_GetItemLikes_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ItemLikeService_GetItemLikes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ItemLikesServiceServer is the server API for ItemLikesService service.
-// All implementations should embed UnimplementedItemLikesServiceServer
+// ItemLikeServiceServer is the server API for ItemLikeService service.
+// All implementations should embed UnimplementedItemLikeServiceServer
 // for forward compatibility.
-type ItemLikesServiceServer interface {
+type ItemLikeServiceServer interface {
 	GetItemLikes(context.Context, *GetItemLikesReq) (*ItemLikesResp, error)
 }
 
-// UnimplementedItemLikesServiceServer should be embedded to have
+// UnimplementedItemLikeServiceServer should be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedItemLikesServiceServer struct{}
+type UnimplementedItemLikeServiceServer struct{}
 
-func (UnimplementedItemLikesServiceServer) GetItemLikes(context.Context, *GetItemLikesReq) (*ItemLikesResp, error) {
+func (UnimplementedItemLikeServiceServer) GetItemLikes(context.Context, *GetItemLikesReq) (*ItemLikesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItemLikes not implemented")
 }
-func (UnimplementedItemLikesServiceServer) testEmbeddedByValue() {}
+func (UnimplementedItemLikeServiceServer) testEmbeddedByValue() {}
 
-// UnsafeItemLikesServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ItemLikesServiceServer will
+// UnsafeItemLikeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ItemLikeServiceServer will
 // result in compilation errors.
-type UnsafeItemLikesServiceServer interface {
-	mustEmbedUnimplementedItemLikesServiceServer()
+type UnsafeItemLikeServiceServer interface {
+	mustEmbedUnimplementedItemLikeServiceServer()
 }
 
-func RegisterItemLikesServiceServer(s grpc.ServiceRegistrar, srv ItemLikesServiceServer) {
-	// If the following call pancis, it indicates UnimplementedItemLikesServiceServer was
+func RegisterItemLikeServiceServer(s grpc.ServiceRegistrar, srv ItemLikeServiceServer) {
+	// If the following call pancis, it indicates UnimplementedItemLikeServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&ItemLikesService_ServiceDesc, srv)
+	s.RegisterService(&ItemLikeService_ServiceDesc, srv)
 }
 
-func _ItemLikesService_GetItemLikes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ItemLikeService_GetItemLikes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetItemLikesReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ItemLikesServiceServer).GetItemLikes(ctx, in)
+		return srv.(ItemLikeServiceServer).GetItemLikes(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ItemLikesService_GetItemLikes_FullMethodName,
+		FullMethod: ItemLikeService_GetItemLikes_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ItemLikesServiceServer).GetItemLikes(ctx, req.(*GetItemLikesReq))
+		return srv.(ItemLikeServiceServer).GetItemLikes(ctx, req.(*GetItemLikesReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ItemLikesService_ServiceDesc is the grpc.ServiceDesc for ItemLikesService service.
+// ItemLikeService_ServiceDesc is the grpc.ServiceDesc for ItemLikeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ItemLikesService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "demo.ItemLikesService",
-	HandlerType: (*ItemLikesServiceServer)(nil),
+var ItemLikeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "demo.ItemLikeService",
+	HandlerType: (*ItemLikeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetItemLikes",
-			Handler:    _ItemLikesService_GetItemLikes_Handler,
+			Handler:    _ItemLikeService_GetItemLikes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

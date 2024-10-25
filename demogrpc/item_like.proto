@@ -12,6 +12,6 @@ message ItemLikesResp {
     map<int32, int32> result = 1;
 }
 
-service ItemLikesService {
+service ItemLikeService {
     rpc GetItemLikes(GetItemLikesReq) returns (ItemLikesResp);
 }

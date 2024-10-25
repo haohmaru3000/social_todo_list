@@ -2,24 +2,30 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/gorm"
 	"log"
+	"net"
 	"net/http"
 	"os"
 
 	"social_todo_list/common"
+	"social_todo_list/demogrpc/demo"
 	"social_todo_list/memcache"
 	"social_todo_list/middleware"
 	ginitem "social_todo_list/module/item/transport/gin"
 	"social_todo_list/module/upload"
 	userstorage "social_todo_list/module/user/storage"
 	ginuser "social_todo_list/module/user/transport/gin"
+	"social_todo_list/module/userlikeitem/storage"
 	ginuserlikeitem "social_todo_list/module/userlikeitem/transport/gin"
+	"social_todo_list/module/userlikeitem/transport/rpc"
 	"social_todo_list/plugin/simple"
 	"social_todo_list/pubsub"
 	"social_todo_list/subscriber"
 
-	"github.com/gin-gonic/gin"
 	goservice "github.com/haohmaru3000/go_sdk"
 	"github.com/haohmaru3000/go_sdk/plugin/jaeger"
 	"github.com/haohmaru3000/go_sdk/plugin/rpccaller"
@@ -57,6 +63,33 @@ var rootCmd = &cobra.Command{
 			serviceLogger.Fatalln(err)
 		}
 
+		/***** Setup gRPC *****/
+		// gRPC Server
+		address := "0.0.0.0:50051"
+		lis, err := net.Listen("tcp", address)
+		if err != nil {
+			log.Fatalf("Error %v", err)
+		}
+		fmt.Printf("Server is listening on %v ...", address)
+		s := grpc.NewServer()
+		db := service.MustGet(common.PluginDBMain).(*gorm.DB)
+		store := storage.NewSQLStore(db)
+		demo.RegisterItemLikeServiceServer(s, rpc.NewRPCService(store))
+		go func() {
+			if err := s.Serve(lis); err != nil {
+				log.Fatalln(err)
+			}
+		}()
+
+		// gRPC Client
+		opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+		cc, err := grpc.NewClient("localhost:50051", opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		client := demo.NewItemLikeServiceClient(cc)
+		////////
+
 		service.HTTPServer().AddHandler(func(engine *gin.Engine) {
 			engine.Use(middleware.Recover())
 
@@ -77,7 +110,6 @@ var rootCmd = &cobra.Command{
 			v1 := engine.Group("/v1")
 			{
 				v1.PUT("/upload", upload.Upload(service))
-
 				v1.POST("/register", ginuser.Register(service))
 				v1.POST("/login", ginuser.Login(service))
 				v1.GET("/profile", middlewareAuth, ginuser.Profile())
@@ -85,20 +117,19 @@ var rootCmd = &cobra.Command{
 				items := v1.Group("/items", middlewareAuth)
 				{
 					items.POST("", ginitem.CreateItem(service))
-					items.GET("", ginitem.ListItem(service))
+					items.GET("", ginitem.ListItem(service, client))
 					items.GET("/:id", ginitem.GetItem(service))
 					items.PATCH("/:id", ginitem.UpdateItem(service))
 					items.DELETE("/:id", ginitem.DeleteItem(service))
-
 					items.POST("/:id/like", ginuserlikeitem.LikeItem(service))
 					items.DELETE("/:id/unlike", ginuserlikeitem.UnlikeItem(service))
 					items.GET("/:id/liked-users", ginuserlikeitem.ListUserLiked(service))
 				}
-			}
 
-			rpc := v1.Group("rpc")
-			{
-				rpc.POST("/get_item_likes", ginuserlikeitem.GetItemLikes(service))
+				rpc := v1.Group("rpc")
+				{
+					rpc.POST("/get_item_likes", ginuserlikeitem.GetItemLikes(service))
+				}
 			}
 
 			engine.GET("/ping", func(c *gin.Context) {
@@ -108,19 +139,19 @@ var rootCmd = &cobra.Command{
 			})
 		})
 
-		/***** Start TRACING *****/
+		/***** Setup TRACING *****/
 		type TracingService interface {
 			Run() error
 		}
-
 		je := service.MustGet("jaeger").(TracingService)
 		if err := je.Run(); err != nil {
 			log.Fatalln(err)
 		}
-		/***** End TRACING *****/
 
+		/***** Setup PUBSUB *****/
 		_ = subscriber.NewEngine(service).Start()
 
+		/***** Start Service *****/
 		if err := service.Start(); err != nil {
 			serviceLogger.Fatalln(err)
 		}
